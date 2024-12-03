@@ -3,10 +3,18 @@
   "installCommand": "npm install",
   "framework": "astro",
   "outputDirectory": "dist",
-  "builds": [
+  "routes": [
     {
-      "src": "package.json",
-      "use": "@vercel/node"
+      "src": "/(.*)",
+      "dest": "/$1",
+      "continue": true
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/404.html"
     }
   ]
 }
