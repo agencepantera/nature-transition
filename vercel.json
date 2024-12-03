@@ -1,20 +1,6 @@
 {
-  "buildCommand": "npx astro build && npx pagefind --site dist",
-  "installCommand": "npm install",
   "framework": "astro",
-  "outputDirectory": "dist",
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/$1",
-      "continue": true
-    },
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/404.html"
-    }
-  ]
+  "buildCommand": null,
+  "devCommand": null,
+  "installCommand": null
 }
