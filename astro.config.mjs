@@ -2,7 +2,6 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import mdx from '@astrojs/mdx';
 import pagefind from "astro-pagefind";
-import vercel from '@astrojs/vercel/serverless';
 
 // https://astro.build/config
 export default defineConfig({
@@ -29,10 +28,6 @@ export default defineConfig({
       }
     })
   ],
-  output: 'server',
-  adapter: vercel({
-    analytics: true,
-  }),
+  output: 'static',
   site: 'https://nature-transition.fr',
-  base: '/',
 });
