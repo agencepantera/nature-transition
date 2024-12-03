@@ -1,0 +1,63 @@
+---
+---
+
+<div class="bg-green-50 p-8 rounded-lg shadow-sm">
+  <div class="max-w-2xl mx-auto text-center">
+    <h3 class="text-2xl font-bold text-gray-900 mb-4">
+      Restez informé·e de mes dernières découvertes
+    </h3>
+    <p class="text-gray-600 mb-6">
+      Recevez mes articles, observations de terrain et actualités environnementales directement dans votre boîte mail.
+    </p>
+    <form 
+      action="/api/subscribe" 
+      method="POST"
+      class="flex flex-col sm:flex-row gap-4 justify-center items-center"
+      id="newsletter-form"
+    >
+      <input
+        type="email"
+        name="email"
+        placeholder="Votre adresse email"
+        required
+        class="px-4 py-2 border border-gray-300 rounded-md w-full sm:w-auto focus:ring-2 focus:ring-green-500 focus:border-green-500"
+      />
+      <button
+        type="submit"
+        class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors w-full sm:w-auto"
+      >
+        S'abonner
+      </button>
+    </form>
+    <p class="text-sm text-gray-500 mt-4">
+      Je respecte votre vie privée. Désabonnement possible à tout moment.
+    </p>
+  </div>
+</div>
+
+<script>
+document.getElementById('newsletter-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target as HTMLFormElement;
+  const email = new FormData(form).get('email');
+
+  try {
+    const response = await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (response.ok) {
+      alert('Merci pour votre inscription ! Vous recevrez bientôt un email de confirmation.');
+      form.reset();
+    } else {
+      throw new Error('Erreur lors de l\'inscription');
+    }
+  } catch (error) {
+    alert('Désolé, une erreur est survenue. Veuillez réessayer plus tard.');
+  }
+});
+</script>

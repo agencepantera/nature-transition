@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import ArticleCard from './ArticleCard.astro';
+
+interface Props {
+  currentArticle: any;
+  maxArticles?: number;
+}
+
+const { currentArticle, maxArticles = 3 } = Astro.props;
+
+// Récupérer tous les articles
+const allArticles = await getCollection('articles');
+
+// Calculer un score de similarité pour chaque article
+const similarArticles = allArticles
+  .filter(article => article.id !== currentArticle.id) // Exclure l'article actuel
+  .map(article => {
+    let score = 0;
+    
+    // Points pour la même catégorie
+    if (article.data.category === currentArticle.data.category) {
+      score += 3;
+    }
+    
+    // Points pour les tags en commun
+    const currentTags = new Set(currentArticle.data.tags || []);
+    const articleTags = new Set(article.data.tags || []);
+    const commonTags = [...currentTags].filter(tag => articleTags.has(tag));
+    score += commonTags.length * 2;
+    
+    return { article, score };
+  })
+  .filter(({ score }) => score > 0) // Garder uniquement les articles avec un score positif
+  .sort((a, b) => b.score - a.score) // Trier par score décroissant
+  .slice(0, maxArticles); // Limiter le nombre d'articles
+---
+
+{similarArticles.length > 0 && (
+  <section class="mt-16">
+    <h2 class="text-2xl font-bold mb-6">Articles similaires</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {similarArticles.map(({ article }) => (
+        <ArticleCard
+          title={article.data.title}
+          description={article.data.description}
+          pubDate={article.data.pubDate}
+          author={article.data.author}
+          image={article.data.image}
+          url={`/articles/${article.slug}`}
+          category={article.data.category}
+        />
+      ))}
+    </div>
+  </section>
+)}

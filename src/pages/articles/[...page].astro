@@ -1,0 +1,83 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+
+export async function getStaticPaths({ paginate }) {
+  const allArticles = await getCollection('articles');
+  
+  // Trier les articles par date de publication (plus récent en premier)
+  const sortedArticles = allArticles.sort((a, b) => 
+    new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+  );
+
+  return paginate(sortedArticles, {
+    pageSize: 6
+  });
+}
+
+const { page } = Astro.props;
+
+const categories = {
+  'energie': 'Énergie',
+  'biodiversite': 'Biodiversité',
+  'developpement-durable': 'Développement Durable',
+  'agriculture': 'Agriculture',
+  'transport': 'Transport',
+  'dechets': 'Déchets'
+};
+
+---
+
+<Layout title="Articles - Nature & Énergie">
+  <div class="bg-gradient-to-b from-green-50 to-white min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h1 class="text-4xl font-bold text-gray-900 text-center mb-8">Nos Articles</h1>
+      
+      <!-- Filtres par catégorie -->
+      <div class="flex flex-wrap justify-center gap-2 mb-8">
+        <a
+          href="/articles"
+          class="px-4 py-2 rounded-full text-sm font-medium bg-green-600 text-white"
+        >
+          Tous les articles
+        </a>
+        {Object.entries(categories).map(([slug, name]) => (
+          <a
+            href={`/thematique/${slug}`}
+            class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
+          >
+            {name}
+          </a>
+        ))}
+      </div>
+
+      <!-- Articles Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {page.data.map(article => (
+          <ArticleCard article={article} />
+        ))}
+      </div>
+
+      <!-- Pagination -->
+      <div class="flex justify-center mt-8 gap-2">
+        {page.url.prev && (
+          <a
+            href={page.url.prev}
+            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+          >
+            Précédent
+          </a>
+        )}
+        {page.url.next && (
+          <a
+            href={page.url.next}
+            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+          >
+            Suivant
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+</Layout>

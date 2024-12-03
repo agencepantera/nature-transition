@@ -1,0 +1,50 @@
+---
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+
+const author = {
+  name: "Marie",
+  role: "Militante environnementale en zone rurale",
+  bio: "Engagée pour la protection de l'environnement en milieu rural, je documente et partage les initiatives locales qui façonnent un avenir plus durable. Mon blog est un espace de réflexion sur les enjeux environnementaux de nos territoires, avec une attention particulière pour la synergie entre zones rurales et urbaines.",
+  image: "/images/marie.avif",
+  social: {
+    x: "marie_env_rural",
+    linkedin: "marie-environnement",
+    email: "marie@nature-energie.fr"
+  }
+};
+---
+
+{compact ? (
+  <div class="flex items-center">
+    <img
+      src={author.image}
+      alt={author.name}
+      class="w-10 h-10 rounded-full mr-3"
+    />
+    <div>
+      <span class="block font-medium">{author.name}</span>
+      <span class="text-sm text-gray-600">{author.role}</span>
+    </div>
+  </div>
+) : (
+  <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
+    <img
+      src={author.image}
+      alt={author.name}
+      class="w-24 h-24 rounded-full"
+    />
+    <div>
+      <h3 class="text-xl font-semibold mb-2">{author.name}</h3>
+      <p class="text-gray-600 mb-4">{author.bio}</p>
+      <div class="flex gap-4">
+        <a href="/a-propos" class="text-green-600 hover:text-green-700">
+          En savoir plus →
+        </a>
+      </div>
+    </div>
+  </div>
+)}

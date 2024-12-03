@@ -1,0 +1,103 @@
+---
+const currentPath = Astro.url.pathname;
+
+const navItems = [
+  { href: '/', label: 'Accueil' },
+  { href: '/articles', label: 'Articles' },
+  { href: '/recherche', label: 'Recherche' },
+  { href: '/a-propos', label: 'À Propos' },
+  { href: '/contact', label: 'Contact' },
+];
+
+---
+
+<nav class="bg-white shadow-md">
+  <div class="container mx-auto px-4">
+    <div class="flex justify-between items-center h-16">
+      <div class="flex-shrink-0">
+        <a href="/" class="group flex items-center space-x-2">
+          <span class="text-3xl font-serif tracking-tight">
+            <span class="text-green-700 font-bold">Nature</span>
+            <span class="text-gray-400 font-light">&</span>
+            <span class="text-emerald-600 font-semibold">Transition</span>
+          </span>
+          <span class="h-1.5 w-1.5 rounded-full bg-green-500 group-hover:animate-pulse"></span>
+        </a>
+      </div>
+      
+      <div class="hidden md:block">
+        <div class="ml-10 flex items-center space-x-4">
+          {navItems.map(({ href, label }) => (
+            <a
+              href={href}
+              class={`px-3 py-2 rounded-md text-sm font-medium ${
+                currentPath === href
+                  ? 'bg-green-700 text-white'
+                  : 'text-gray-700 hover:bg-green-50'
+              }`}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div class="md:hidden">
+        <button
+          type="button"
+          class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-green-50 focus:outline-none"
+          aria-controls="mobile-menu"
+          aria-expanded="false"
+        >
+          <span class="sr-only">Ouvrir le menu</span>
+          <svg
+            class="h-6 w-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu mobile -->
+  <div class="md:hidden hidden" id="mobile-menu">
+    <div class="px-2 pt-2 pb-3 space-y-1">
+      {navItems.map(({ href, label }) => (
+        <a
+          href={href}
+          class={`block px-3 py-2 rounded-md text-base font-medium ${
+            currentPath === href
+              ? 'bg-green-700 text-white'
+              : 'text-gray-700 hover:bg-green-50'
+          }`}
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Toggle menu mobile
+  const mobileMenuButton = document.querySelector('.mobile-menu-button');
+  const mobileMenu = document.querySelector('#mobile-menu');
+
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+      const expanded = mobileMenuButton.getAttribute('aria-expanded') === 'true';
+      mobileMenuButton.setAttribute('aria-expanded', (!expanded).toString());
+    });
+  }
+</script>

@@ -1,0 +1,191 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+
+const articles = await getCollection('articles');
+const sortedArticles = articles
+  .sort((a: CollectionEntry<'articles'>, b: CollectionEntry<'articles'>) => 
+    new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime())
+  .slice(0, 3);
+
+const categories = {
+  'energie': { 
+    name: 'Énergie', 
+    icon: '⚡', 
+    color: 'from-yellow-200 to-orange-200',
+    textColor: 'text-amber-800'
+  },
+  'biodiversite': { 
+    name: 'Biodiversité', 
+    icon: '🌿', 
+    color: 'from-green-100 to-emerald-200',
+    textColor: 'text-emerald-800'
+  },
+  'developpement-durable': { 
+    name: 'Développement Durable', 
+    icon: '🌍', 
+    color: 'from-sky-100 to-blue-200',
+    textColor: 'text-blue-800'
+  },
+  'agriculture': { 
+    name: 'Agriculture', 
+    icon: '🌾', 
+    color: 'from-lime-100 to-green-200',
+    textColor: 'text-green-800'
+  },
+  'transport': { 
+    name: 'Transport', 
+    icon: '🚗', 
+    color: 'from-indigo-100 to-blue-200',
+    textColor: 'text-indigo-800'
+  },
+  'dechets': { 
+    name: 'Déchets', 
+    icon: '♻️', 
+    color: 'from-teal-100 to-green-200',
+    textColor: 'text-teal-800'
+  }
+};
+---
+
+<Layout title="Nature & Énergie - Actualités environnementales">
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-green-700 to-emerald-900 text-white">
+    <div class="absolute inset-0 bg-black/20"></div>
+    <div class="container mx-auto px-4 py-20 relative">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-5xl font-bold mb-6 opacity-0 animate-fade-in">
+          Explorez le Futur Durable
+        </h1>
+        <p class="text-xl mb-8 text-green-50 opacity-0 animate-fade-in animation-delay-200">
+          Découvrez des articles passionnants sur l'environnement, l'énergie et le développement durable.
+          Une approche journalistique personnelle pour comprendre les enjeux de demain.
+        </p>
+        <a href="/articles" 
+          class="inline-block px-8 py-4 bg-white text-green-800 rounded-full font-semibold 
+                 hover:bg-green-50 transition-all duration-300 transform hover:scale-105
+                 opacity-0 animate-fade-in animation-delay-400">
+          Découvrir les Articles
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-gray-900 mb-12 text-center">Explorez par Thématique</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Object.entries(categories).map(([key, category], index) => (
+          <a href={`/thematique/${key}`} 
+             class="group relative overflow-hidden rounded-xl p-6 opacity-0 animate-fade-in hover:shadow-lg transition-all duration-300"
+             style={`animation-delay: ${index * 150}ms`}>
+            <div class={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-95 
+                         transform group-hover:scale-102 transition-transform duration-300`}>
+            </div>
+            <div class="relative">
+              <span class="text-4xl mb-4 block">{category.icon}</span>
+              <h3 class={`text-xl font-semibold mb-2 ${category.textColor}`}>{category.name}</h3>
+              <p class={`${category.textColor} opacity-80`}>
+                Découvrez nos articles sur {category.name.toLowerCase()}
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Articles -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8">Articles Récents</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {sortedArticles.map((article: CollectionEntry<'articles'>, index: number) => (
+          <div class="opacity-0 animate-fade-in" style={`animation-delay: ${index * 200}ms`}>
+            <ArticleCard
+              title={article.data.title}
+              description={article.data.description}
+              pubDate={article.data.pubDate}
+              author={article.data.author}
+              image={article.data.image}
+              category={article.data.category}
+              url={`/articles/${article.slug}`}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Newsletter Section -->
+  <section class="py-16 bg-gradient-to-br from-gray-900 to-green-900 text-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-2xl mx-auto text-center">
+        <h2 class="text-3xl font-bold mb-6">Restez Informé</h2>
+        <p class="mb-8 text-gray-200">
+          Recevez nos derniers articles et analyses directement dans votre boîte mail.
+        </p>
+        <form 
+          action="https://formspree.io/f/mldezrvk" 
+          method="POST" 
+          class="flex flex-col sm:flex-row gap-4 justify-center newsletter-form"
+        >
+          <div class="relative flex-grow max-w-md">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/60" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+              </svg>
+            </div>
+            <input 
+              type="email" 
+              name="email"
+              placeholder="Votre adresse email" 
+              required
+              class="pl-10 w-full px-6 py-3 rounded-full bg-white/10 border border-white/20 text-white placeholder-white/60
+                     focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent
+                     transition-all duration-200"
+            />
+          </div>
+          <button 
+            type="submit" 
+            class="px-8 py-3 bg-green-500 rounded-full font-semibold hover:bg-green-400 
+                   transition-all duration-200 transform hover:scale-[1.02] focus:outline-none 
+                   focus:ring-2 focus:ring-offset-2 focus:ring-green-500 focus:ring-offset-gray-900
+                   disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            S'abonner
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+</style>

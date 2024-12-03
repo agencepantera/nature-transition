@@ -1,0 +1,62 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { categories } from '../../data/categories';
+
+export async function getStaticPaths() {
+  const paths = Object.keys(categories).map(category => ({
+    params: { category },
+    props: { categoryInfo: categories[category] }
+  }));
+
+  return paths;
+}
+
+const { category } = Astro.params;
+const { categoryInfo } = Astro.props;
+
+// Récupérer et filtrer les articles
+const allArticles = await getCollection('articles');
+const filteredArticles = allArticles
+  .filter(article => article.data.category === category)
+  .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+---
+
+<Layout title={`${categoryInfo.name} - Nature & Énergie`}>
+  <div class="bg-gradient-to-b from-green-50 to-white min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="flex items-center justify-between mb-8">
+        <a 
+          href="/articles" 
+          class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+          </svg>
+          Retour aux articles
+        </a>
+        <h1 class="text-4xl font-bold text-gray-900 text-center">{categoryInfo.name}</h1>
+        <div class="w-[140px]"></div>
+      </div>
+
+      <!-- Hero Section -->
+      <div class={`relative overflow-hidden rounded-xl p-8 mb-12 bg-gradient-to-br ${categoryInfo.color}`}>
+        <div class="relative z-10">
+          <span class="text-6xl mb-4 block">{categoryInfo.icon}</span>
+          <h2 class={`text-3xl font-bold mb-4 ${categoryInfo.textColor}`}>{categoryInfo.name}</h2>
+          <p class={`text-lg ${categoryInfo.textColor} max-w-2xl`}>
+            {categoryInfo.description}
+          </p>
+        </div>
+      </div>
+
+      <!-- Articles Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {filteredArticles.map(article => (
+          <ArticleCard article={article} />
+        ))}
+      </div>
+    </div>
+  </div>
+</Layout>

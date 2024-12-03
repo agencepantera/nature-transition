@@ -1,0 +1,79 @@
+---
+import '@pagefind/default-ui/css/ui.css';
+---
+
+<div id="search" class="w-full"></div>
+
+<script>
+  window.addEventListener('DOMContentLoaded', async function() {
+    try {
+      console.log("Initializing search...");
+      const { PagefindUI } = await import('@pagefind/default-ui');
+      console.log("PagefindUI imported successfully");
+      
+      window.pagefind = new PagefindUI({
+        element: "#search",
+        resetStyles: false,
+        showImages: true,
+        showSubResults: true,
+        translations: {
+          placeholder: "Rechercher un article...",
+          clear_search: "Effacer",
+          load_more: "Voir plus de résultats",
+          search_label: "Rechercher sur le site",
+          filters_label: "Filtres",
+          zero_results: "Aucun résultat pour [SEARCH_TERM]",
+          many_results: "[COUNT] résultats pour [SEARCH_TERM]",
+          one_result: "[COUNT] résultat pour [SEARCH_TERM]",
+          alt_search: "Aucun résultat pour [SEARCH_TERM]. Affichage des résultats pour [DIFFERENT_TERM] à la place",
+          search_suggestion: "Aucun résultat pour [SEARCH_TERM]. Essayez l'une des recherches suivantes :",
+          searching: "Recherche de [SEARCH_TERM]..."
+        },
+        debounceTimeoutMs: 500,
+        maxResults: 8
+      });
+      console.log("Search initialized successfully");
+    } catch (error) {
+      console.error("Error initializing search:", error);
+    }
+  });
+</script>
+
+<style>
+  :global(.pagefind-ui) {
+    --pagefind-ui-scale: 1;
+    --pagefind-ui-primary: #16a34a;
+    --pagefind-ui-text: #374151;
+    --pagefind-ui-background: #ffffff;
+    --pagefind-ui-border: #e5e7eb;
+    --pagefind-ui-border-radius: 0.5rem;
+    --pagefind-ui-font: inherit;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  :global(.pagefind-ui .pagefind-ui__search-input) {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--pagefind-ui-border);
+    border-radius: var(--pagefind-ui-border-radius);
+    font-size: 1rem;
+  }
+
+  :global(.pagefind-ui .pagefind-ui__results) {
+    margin-top: 1rem;
+  }
+
+  :global(.pagefind-ui .pagefind-ui__result) {
+    padding: 1rem;
+    border: 1px solid var(--pagefind-ui-border);
+    border-radius: var(--pagefind-ui-border-radius);
+    margin-bottom: 0.5rem;
+  }
+
+  :global(.pagefind-ui .pagefind-ui__message) {
+    padding: 1rem;
+    color: var(--pagefind-ui-text);
+  }
+</style>

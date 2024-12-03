@@ -1,0 +1,42 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+
+// Ne garder que les titres de niveau 2 et 3
+const filteredHeadings = headings.filter(heading => heading.depth >= 2 && heading.depth <= 3);
+---
+
+<nav class="toc bg-gray-50 p-6 rounded-lg sticky top-4">
+  <h2 class="text-lg font-semibold mb-4">Sommaire</h2>
+  <ul class="space-y-2">
+    {filteredHeadings.map((heading) => (
+      <li class={`${heading.depth === 3 ? 'ml-4' : ''}`}>
+        <a
+          href={`#${heading.slug}`}
+          class={`
+            block text-gray-600 hover:text-green-600 transition-colors duration-200
+            ${heading.depth === 2 ? 'font-medium' : 'text-sm'}
+          `}
+        >
+          {heading.text}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .toc {
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
+</style>

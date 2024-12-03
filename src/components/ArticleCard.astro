@@ -1,0 +1,130 @@
+---
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
+
+interface Props {
+  article?: {
+    data: {
+      title: string;
+      description: string;
+      pubDate: Date;
+      author: string;
+      image?: string;
+      category: string;
+    };
+    slug: string;
+  };
+  title?: string;
+  description?: string;
+  pubDate?: Date;
+  author?: string;
+  image?: string;
+  category?: string;
+  url?: string;
+  class?: string;
+}
+
+const { article, title: titleProp, description: descProp, pubDate: dateProp, author: authorProp, image: imageProp, category: categoryProp, url: urlProp, class: classProp } = Astro.props;
+
+// Use either article props or individual props
+const title = article?.data?.title || titleProp;
+const description = article?.data?.description || descProp;
+const pubDate = article?.data?.pubDate || dateProp;
+const author = article?.data?.author || authorProp;
+const image = article?.data?.image || imageProp;
+const category = article?.data?.category || categoryProp;
+const url = article ? `/articles/${article.slug}` : urlProp;
+
+const formattedDate = pubDate ? new Date(pubDate).toLocaleDateString('fr-FR', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+}) : '';
+
+const categoryColors: { [key: string]: string } = {
+  'energie': 'bg-amber-100 text-amber-800',
+  'biodiversite': 'bg-emerald-100 text-emerald-800',
+  'developpement-durable': 'bg-green-100 text-green-800',
+  'agriculture': 'bg-lime-100 text-lime-800',
+  'transport': 'bg-sky-100 text-sky-800',
+  'dechets': 'bg-orange-100 text-orange-800'
+};
+
+const categoryName: { [key: string]: string } = {
+  'energie': 'Énergie',
+  'biodiversite': 'Biodiversité',
+  'developpement-durable': 'Développement Durable',
+  'agriculture': 'Agriculture',
+  'transport': 'Transport',
+  'dechets': 'Déchets'
+};
+
+---
+
+<article 
+  class={`bg-white rounded-xl overflow-hidden shadow-sm transition-all duration-200 h-full flex flex-col ${classProp}`}
+  data-category={category}
+>
+  <a href={url} class="block group h-full flex flex-col">
+    <!-- Image -->
+    <div class="relative h-48 overflow-hidden flex-shrink-0">
+      {image ? (
+        <img
+          src={image}
+          alt={title}
+          class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+        />
+      ) : (
+        <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+          <span class="text-gray-400">Image non disponible</span>
+        </div>
+      )}
+      <!-- Category Badge -->
+      {category && (
+        <div class="absolute top-4 left-4">
+          <span class={`px-3 py-1 rounded-full text-sm font-medium ${categoryColors[category] || 'bg-gray-100 text-gray-800'}`}>
+            {categoryName[category] || category}
+          </span>
+        </div>
+      )}
+    </div>
+
+    <!-- Content -->
+    <div class="p-6 flex flex-col flex-grow">
+      <h3 class="text-xl font-serif font-bold text-gray-900 mb-2 group-hover:text-green-700 transition-colors duration-200">
+        {title}
+      </h3>
+      {description && (
+        <p class="text-gray-600 mb-4 line-clamp-2">
+          {description}
+        </p>
+      )}
+      
+      <!-- Meta -->
+      <div class="flex items-center justify-between text-sm text-gray-500 mt-auto">
+        {author && (
+          <div class="flex items-center space-x-2">
+            <img
+              src="/images/marie.avif"
+              alt={author}
+              class="w-6 h-6 rounded-full"
+            />
+            <span>{author}</span>
+          </div>
+        )}
+        {formattedDate && (
+          <time datetime={pubDate?.toString()}>{formattedDate}</time>
+        )}
+      </div>
+    </div>
+  </a>
+</article>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

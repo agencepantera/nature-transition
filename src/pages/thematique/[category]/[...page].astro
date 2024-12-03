@@ -1,0 +1,139 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import ArticleCard from '../../../components/ArticleCard.astro';
+
+export async function getStaticPaths({ paginate }) {
+  const allArticles = await getCollection('articles');
+  const categories = {
+    'energie': { 
+      name: 'Énergie',
+      description: "Explorez les dernières innovations en matière d'énergie renouvelable et de transition énergétique.",
+      icon: '⚡',
+      color: 'from-yellow-200 to-orange-200',
+      textColor: 'text-amber-800'
+    },
+    'biodiversite': {
+      name: 'Biodiversité',
+      description: 'Découvrez la richesse de notre écosystème et les enjeux de sa préservation.',
+      icon: '🌿',
+      color: 'from-green-100 to-emerald-200',
+      textColor: 'text-emerald-800'
+    },
+    'developpement-durable': {
+      name: 'Développement Durable',
+      description: 'Comprendre les solutions pour un avenir plus durable et responsable.',
+      icon: '🌍',
+      color: 'from-sky-100 to-blue-200',
+      textColor: 'text-blue-800'
+    },
+    'agriculture': {
+      name: 'Agriculture',
+      description: "L'agriculture de demain : entre tradition et innovation pour nourrir la planète.",
+      icon: '🌾',
+      color: 'from-lime-100 to-green-200',
+      textColor: 'text-green-800'
+    },
+    'transport': {
+      name: 'Transport',
+      description: 'La mobilité du futur : plus propre, plus intelligente, plus efficace.',
+      icon: '🚗',
+      color: 'from-indigo-100 to-blue-200',
+      textColor: 'text-indigo-800'
+    },
+    'dechets': {
+      name: 'Déchets',
+      description: 'Vers une économie circulaire : réduire, réutiliser, recycler.',
+      icon: '♻️',
+      color: 'from-teal-100 to-green-200',
+      textColor: 'text-teal-800'
+    }
+  };
+
+  const paths = [];
+
+  for (const [categorySlug, categoryInfo] of Object.entries(categories)) {
+    const filteredArticles = allArticles
+      .filter(article => article.data.category === categorySlug)
+      .sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+
+    const paginatedPaths = paginate(filteredArticles, {
+      params: { category: categorySlug },
+      pageSize: 6,
+      props: { categoryInfo, categories }
+    });
+    paths.push(...paginatedPaths);
+  }
+
+  return paths;
+}
+
+const { page, category, categoryInfo, categories } = Astro.props;
+---
+
+<Layout title={`${categoryInfo.name} - Nature & Énergie`}>
+  <div class="bg-gradient-to-b from-green-50 to-white min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="flex items-center justify-between mb-8">
+        <a 
+          href="/articles" 
+          class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+          </svg>
+          Retour aux articles
+        </a>
+        <h1 class="text-4xl font-bold text-gray-900 text-center">{categoryInfo.name}</h1>
+        <div class="w-[140px]"></div>
+      </div>
+      
+      <!-- Filtres par catégorie -->
+      <div class="flex flex-wrap justify-center gap-2 mb-8">
+        <a
+          href="/articles"
+          class="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200"
+        >
+          Tous les articles
+        </a>
+        {Object.entries(categories).map(([slug, info]) => (
+          <a
+            href={`/thematique/${slug}`}
+            class={`px-4 py-2 rounded-full text-sm font-medium ${
+              category === slug ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            {info.name}
+          </a>
+        ))}
+      </div>
+
+      <!-- Articles Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {page.data.map(article => (
+          <ArticleCard article={article} />
+        ))}
+      </div>
+
+      <!-- Pagination -->
+      <div class="flex justify-center mt-8 gap-2">
+        {page.url.prev && (
+          <a
+            href={page.url.prev}
+            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+          >
+            Précédent
+          </a>
+        )}
+        {page.url.next && (
+          <a
+            href={page.url.next}
+            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+          >
+            Suivant
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+</Layout>
