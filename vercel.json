@@ -1,6 +1,6 @@
 {
+  "buildCommand": "astro build",
   "framework": "astro",
-  "buildCommand": null,
-  "devCommand": null,
-  "installCommand": null
+  "installCommand": "npm install",
+  "regions": ["iad1"]
 }
