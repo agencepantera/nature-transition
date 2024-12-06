@@ -166,6 +166,13 @@ declare module 'astro:content' {
   collection: "articles";
   data: InferEntrySchema<"articles">
 } & { render(): Render[".mdx"] };
+"celibataires-ecoresponsables.mdx": {
+	id: "celibataires-ecoresponsables.mdx";
+  slug: "celibataires-ecoresponsables";
+  body: string;
+  collection: "articles";
+  data: InferEntrySchema<"articles">
+} & { render(): Render[".mdx"] };
 "compostage-au-jardin.mdx": {
 	id: "compostage-au-jardin.mdx";
   slug: "compostage-au-jardin";

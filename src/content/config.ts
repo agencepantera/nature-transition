@@ -8,7 +8,7 @@ const articles = defineCollection({
     pubDate: z.date(),
     author: z.string(),
     image: z.string().optional(),
-    category: z.enum(['energie', 'biodiversite', 'developpement-durable', 'agriculture', 'transport', 'dechets']),
+    category: z.enum(['energie', 'biodiversite', 'developpement-durable', 'agriculture', 'transport', 'dechets', 'mode-de-vie']),
     tags: z.array(z.string()).optional(),
   }),
 });
