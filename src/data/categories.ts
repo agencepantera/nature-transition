@@ -40,5 +40,12 @@ export const categories = {
     icon: '♻️',
     color: 'from-teal-100 to-green-200',
     textColor: 'text-teal-800'
+  },
+  'mode-de-vie': {
+    name: 'Mode de Vie',
+    description: 'Adoptez un mode de vie plus durable et responsable au quotidien.',
+    icon: '🌱',
+    color: 'from-purple-100 to-violet-200',
+    textColor: 'text-purple-800'
   }
 };
