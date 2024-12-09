@@ -222,6 +222,13 @@ declare module 'astro:content' {
   collection: "articles";
   data: InferEntrySchema<"articles">
 } & { render(): Render[".mdx"] };
+"transports-commun-ecologique.mdx": {
+	id: "transports-commun-ecologique.mdx";
+  slug: "transports-commun-ecologique";
+  body: string;
+  collection: "articles";
+  data: InferEntrySchema<"articles">
+} & { render(): Render[".mdx"] };
 "villes-durables-2024.mdx": {
 	id: "villes-durables-2024.mdx";
   slug: "villes-durables-2024";
