@@ -1,6 +1,7 @@
 ---
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
+import type { CategoryId } from '../config/categories';
+import { formatPublicationDate } from '../utils/date';
+import CategoryBadge from './CategoryBadge.astro';
 
 interface Props {
   article?: {
@@ -10,7 +11,7 @@ interface Props {
       pubDate: Date;
       author: string;
       image?: string;
-      category: string;
+      category: CategoryId;
     };
     slug: string;
   };
@@ -19,7 +20,7 @@ interface Props {
   pubDate?: Date;
   author?: string;
   image?: string;
-  category?: string;
+  category?: CategoryId;
   url?: string;
   class?: string;
 }
@@ -35,34 +36,12 @@ const image = article?.data?.image || imageProp;
 const category = article?.data?.category || categoryProp;
 const url = article ? `/articles/${article.slug}` : urlProp;
 
-const formattedDate = pubDate ? new Date(pubDate).toLocaleDateString('fr-FR', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric'
-}) : '';
-
-const categoryColors: { [key: string]: string } = {
-  'energie': 'bg-amber-100 text-amber-800',
-  'biodiversite': 'bg-emerald-100 text-emerald-800',
-  'developpement-durable': 'bg-green-100 text-green-800',
-  'agriculture': 'bg-lime-100 text-lime-800',
-  'transport': 'bg-sky-100 text-sky-800',
-  'dechets': 'bg-orange-100 text-orange-800'
-};
-
-const categoryName: { [key: string]: string } = {
-  'energie': 'Énergie',
-  'biodiversite': 'Biodiversité',
-  'developpement-durable': 'Développement Durable',
-  'agriculture': 'Agriculture',
-  'transport': 'Transport',
-  'dechets': 'Déchets'
-};
+const formattedDate = pubDate ? formatPublicationDate(pubDate) : '';
 
 ---
 
 <article 
-  class={`bg-white rounded-xl overflow-hidden shadow-sm transition-all duration-200 h-full flex flex-col ${classProp}`}
+  class={`card hover:shadow-md h-full flex flex-col ${classProp}`}
   data-category={category}
 >
   <a href={url} class="block group h-full flex flex-col">
@@ -73,6 +52,7 @@ const categoryName: { [key: string]: string } = {
           src={image}
           alt={title}
           class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+          loading="lazy"
         />
       ) : (
         <div class="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -82,38 +62,33 @@ const categoryName: { [key: string]: string } = {
       <!-- Category Badge -->
       {category && (
         <div class="absolute top-4 left-4">
-          <span class={`px-3 py-1 rounded-full text-sm font-medium ${categoryColors[category] || 'bg-gray-100 text-gray-800'}`}>
-            {categoryName[category] || category}
-          </span>
+          <CategoryBadge category={category} />
         </div>
       )}
     </div>
 
     <!-- Content -->
-    <div class="p-6 flex flex-col flex-grow">
-      <h3 class="text-xl font-serif font-bold text-gray-900 mb-2 group-hover:text-green-700 transition-colors duration-200">
+    <div class="p-8 flex flex-col flex-grow">
+      <h3 class="text-2xl font-serif font-bold text-gray-900 mb-4 group-hover:text-primary-dark transition-colors duration-200 leading-tight">
         {title}
       </h3>
       {description && (
-        <p class="text-gray-600 mb-4 line-clamp-2">
+        <p class="text-lg text-gray-600 mb-6 line-clamp-2 leading-relaxed">
           {description}
         </p>
       )}
       
-      <!-- Meta -->
-      <div class="flex items-center justify-between text-sm text-gray-500 mt-auto">
+      <!-- Metadata -->
+      <div class="mt-auto flex items-center text-base text-gray-500">
         {author && (
-          <div class="flex items-center space-x-2">
-            <img
-              src="/images/marie.webp"
-              alt={author}
-              class="w-6 h-6 rounded-full"
-            />
-            <span>{author}</span>
-          </div>
+          <span class="mr-6">
+            <span class="font-medium text-gray-700">{author}</span>
+          </span>
         )}
         {formattedDate && (
-          <time datetime={pubDate?.toString()}>{formattedDate}</time>
+          <time datetime={pubDate?.toISOString()}>
+            {formattedDate}
+          </time>
         )}
       </div>
     </div>

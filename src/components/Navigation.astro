@@ -1,13 +1,9 @@
 ---
-const currentPath = Astro.url.pathname;
+import { navItems } from '../config/navigation';
+import Logo from './Logo.astro';
+import MobileMenu from './MobileMenu.astro';
 
-const navItems = [
-  { href: '/', label: 'Accueil' },
-  { href: '/articles', label: 'Articles' },
-  { href: '/recherche', label: 'Recherche' },
-  { href: '/a-propos', label: 'À Propos' },
-  { href: '/contact', label: 'Contact' },
-];
+const currentPath = Astro.url.pathname;
 
 ---
 
@@ -15,14 +11,7 @@ const navItems = [
   <div class="container mx-auto px-4">
     <div class="flex justify-between items-center h-16">
       <div class="flex-shrink-0">
-        <a href="/" class="group flex items-center space-x-2">
-          <span class="text-3xl font-serif tracking-tight">
-            <span class="text-green-700 font-bold">Nature</span>
-            <span class="text-gray-400 font-light">&</span>
-            <span class="text-emerald-600 font-semibold">Transition</span>
-          </span>
-          <span class="h-1.5 w-1.5 rounded-full bg-green-500 group-hover:animate-pulse"></span>
-        </a>
+        <Logo />
       </div>
       
       <div class="hidden md:block">
@@ -30,10 +19,10 @@ const navItems = [
           {navItems.map(({ href, label }) => (
             <a
               href={href}
-              class={`px-3 py-2 rounded-md text-sm font-medium ${
+              class={`nav-link ${
                 currentPath === href
-                  ? 'bg-green-700 text-white'
-                  : 'text-gray-700 hover:bg-green-50'
+                  ? 'nav-link-active'
+                  : 'nav-link-inactive'
               }`}
             >
               {label}
@@ -42,48 +31,7 @@ const navItems = [
         </div>
       </div>
 
-      <div class="md:hidden">
-        <button
-          type="button"
-          class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:bg-green-50 focus:outline-none"
-          aria-controls="mobile-menu"
-          aria-expanded="false"
-        >
-          <span class="sr-only">Ouvrir le menu</span>
-          <svg
-            class="h-6 w-6"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Menu mobile -->
-  <div class="md:hidden hidden" id="mobile-menu">
-    <div class="px-2 pt-2 pb-3 space-y-1">
-      {navItems.map(({ href, label }) => (
-        <a
-          href={href}
-          class={`block px-3 py-2 rounded-md text-base font-medium ${
-            currentPath === href
-              ? 'bg-green-700 text-white'
-              : 'text-gray-700 hover:bg-green-50'
-          }`}
-        >
-          {label}
-        </a>
-      ))}
+      <MobileMenu items={navItems} currentPath={currentPath} />
     </div>
   </div>
 </nav>

@@ -1,0 +1,16 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<a href="/" class={`group flex items-center space-x-2 ${className}`}>
+  <span class="text-3xl font-serif tracking-tight">
+    <span class="text-green-700 font-bold">Nature</span>
+    <span class="text-gray-400 font-light">&</span>
+    <span class="text-emerald-600 font-semibold">Transition</span>
+  </span>
+  <span class="h-1.5 w-1.5 rounded-full bg-green-500 group-hover:animate-pulse"></span>
+</a>

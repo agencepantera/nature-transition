@@ -1,0 +1,17 @@
+---
+import type { CategoryId } from '../config/categories';
+import { categoryColors, categoryNames } from '../config/categories';
+
+interface Props {
+  category: CategoryId;
+  class?: string;
+}
+
+const { category, class: className = '' } = Astro.props;
+const colorClasses = categoryColors[category] || 'bg-gray-100 text-gray-800';
+const displayName = categoryNames[category] || category;
+---
+
+<span class={`px-3 py-1 rounded-full text-sm font-medium ${colorClasses} ${className}`}>
+  {displayName}
+</span>
